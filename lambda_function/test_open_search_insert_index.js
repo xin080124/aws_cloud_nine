@@ -34,19 +34,28 @@ const https = require('https');
 
 'use strict'
 
+var postData = JSON.stringify({
+    "title": "One", "tags": ["ruby"]}
+);
+
 let options = {
     host : 'search-ando-demo-krmubpnjpq53mxw47vdgkex25e.ap-southeast-2.es.amazonaws.com',
+    path:  '/lbd_index/_doc',
+    method: 'POST',
     // port = 9243,
     // username = "monitoring",
     // password = "QlpqvIHswMl6OG/P2rbi67/3p69doY7k"
     headers: {
-        'Authorization': 'Basic bW9uaXRvcmluZzpRbHBxdklIc3dNbDZPRy9QMnJiaTY3LzNwNjlkb1k3aw=='
+        'Authorization': 'Basic bW9uaXRvcmluZzpRbHBxdklIc3dNbDZPRy9QMnJiaTY3LzNwNjlkb1k3aw==',
+        'Content-Type': 'application/json',
+        'Content-Length': postData.length
         },
 };
 
 exports.handler = (event, context, callback) => {
     const req = https.request(options, (res) => {
         let body = '';
+        // let body = '{"title": "One", "tags": ["ruby"]}';
         console.log('Status:', res.statusCode);
         console.log('Headers:', JSON.stringify(res.headers));
         res.setEncoding( 'utf8');
@@ -62,5 +71,7 @@ exports.handler = (event, context, callback) => {
     });
     req.on('error', callback);
     // req.write(JSON.stringify(event.data));
+    
+    req.write(postData);
     req.end();
 };
